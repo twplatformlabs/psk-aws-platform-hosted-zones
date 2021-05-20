@@ -39,7 +39,7 @@ workflows:
           workspace: state
           before-terraform:
             - set-environment:
-                env: multiaccount
+                account: multiaccount
           filters: *on-push-master
 
       - approve-hosted-zone-changes:
@@ -55,7 +55,7 @@ workflows:
           workspace: state
           before-terraform:
             - set-environment:
-                env: multiaccount
+                account: multiaccount
           after-terraform:
             - run:
                 name: test hosted zone configuration
