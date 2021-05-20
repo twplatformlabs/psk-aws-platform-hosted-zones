@@ -7,7 +7,7 @@ orbs:
 # git push: release
 on-push-master: &on-push-master
   branches:
-    only: /master/
+    only: /main/
   tags:
     ignore: /.*/
 
