@@ -16,7 +16,7 @@ commands:
   set-environment:
     description: generate environment credentials and configuration from templates
     parameters:
-      account:
+      acct:
         type: string
         default: ''
     steps:
@@ -24,8 +24,8 @@ commands:
           name: set ~/.terraformrc
           command: secrethub inject -i tpl/terraformrc.tpl -o ~/.terraformrc
       - run:
-          name: set << parameters.account >> environment variables
-          command: secrethub inject -i environments/<< parameters.account >>.auto.tfvars.json.tpl -o << parameters.account >>.auto.tfvars.json
+          name: set << parameters.acct >> environment variables
+          command: secrethub inject -i environments/<< parameters.acct >>.auto.tfvars.json.tpl -o << parameters.acct >>.auto.tfvars.json
 
 workflows:
   version: 2
@@ -39,7 +39,7 @@ workflows:
           workspace: state
           before-terraform:
             - set-environment:
-                account: multiaccount
+                acct: multiaccount
           filters: *on-push-master
 
       - approve-hosted-zone-changes:
@@ -55,7 +55,7 @@ workflows:
           workspace: state
           before-terraform:
             - set-environment:
-                account: multiaccount
+                acct: multiaccount
           after-terraform:
             - run:
                 name: test hosted zone configuration
