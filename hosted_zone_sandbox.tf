@@ -11,7 +11,8 @@ provider "aws" {
 #create the subdomain
 module "sandbox_subdomain" {
   source  = "terraform-aws-modules/route53/aws//modules/zones"
-  version = "2.1.0"
+  version = "2.0.0"
+  create  = true
 
   providers = {
     aws = aws.sandbox_account
@@ -20,27 +21,31 @@ module "sandbox_subdomain" {
   zones = {
     "sandbox.${var.top_level_domain}" = {
       comment = "subdomain hosted zone for dps lab sandbox cluster"
+      tags = {
+        cluster        = "sandbox"
+      }
     }
   }
 
   tags = {
-    cluster        = "sandbox"
     pipeline       = "lab-platform-hosted-zones"
   }
 }
 
 module "sandbox_zone_delegation" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
-  version = "2.1.0"
+  version = "2.0.0"
+  create  = true
 
   providers = {
     aws = aws.top_level_domain
   }
 
+  private_zone = false
   zone_name = var.top_level_domain
   records = [
     {
-      name            = "sandbox"
+      name            = "sandbox.${var.top_level_domain}"
       type            = "NS"
       ttl             = 172800
       zone_id         = data.aws_route53_zone.top_level_zone.id
