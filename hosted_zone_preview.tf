@@ -42,7 +42,7 @@ module "preview_zone_delegation" {
   zone_name = var.top_level_domain
   records = [
     {
-      name            = "preview.${var.top_level_domain}"
+      name            = "preview"
       type            = "NS"
       ttl             = 172800
       zone_id         = data.aws_route53_zone.top_level_zone.id
