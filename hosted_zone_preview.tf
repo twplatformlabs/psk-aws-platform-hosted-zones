@@ -11,7 +11,7 @@ provider "aws" {
 #create the subdomain
 module "preview_subdomain" {
   source  = "terraform-aws-modules/route53/aws//modules/zones"
-  version = "2.0.0"
+  version = "2.1.0"
 
   providers = {
     aws = aws.preview_account
@@ -31,7 +31,7 @@ module "preview_subdomain" {
 
 module "preview_zone_delegation" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
-  version = "~> 2.0"
+  version = "2.1.0"
 
   providers = {
     aws = aws.top_level_domain
