@@ -63,7 +63,6 @@ workflows:
                   TEST_ENV: multiaccount
                 command: |
                   bash scripts/hosted_zone_test.sh multiaccount nonprod
-                  bash scripts/hosted_zone_test.sh multiaccount prod
           requires:
             - approve-hosted-zone-changes
           filters: *on-push-main

@@ -1,87 +1,88 @@
-provider "aws" {
-  alias  = "top_level_domain"
-  region = "us-east-2"
-  assume_role {
-    role_arn     = "arn:aws:iam::${var.prod_account_id}:role/${var.assume_role}"
-  }
-}
+# provider "aws" {
+#   alias  = "top_level_domain"
+#   region = "us-east-2"
+#   assume_role {
+#     role_arn     = "arn:aws:iam::${var.prod_account_id}:role/${var.assume_role}"
+#   }
+# }
 
-# zone id for the top-level-zone
-data "aws_route53_zone" "top_level_zone" {
-  provider = aws.top_level_domain
-  name     = var.top_level_domain
-}
+# # zone id for the top-level-zone
+# data "aws_route53_zone" "top_level_zone" {
+#   provider = aws.top_level_domain
+#   name     = var.top_level_domain
+# }
 
-resource "aws_iam_role" "dns_manager" {
-  name = "dns_manager"
-  provider = aws.top_level_domain
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          AWS = [
-            "arn:aws:iam::${var.nonprod_account_id}:role/cert-manager",
-            "arn:aws:iam::${var.prod_account_id}:role/cert-manager"
-          ]
-        }
-      }
-    ]
-  })
+# resource "aws_iam_role" "dns_manager" {
+#   name = "dns_manager"
+#   provider = aws.top_level_domain
 
-  tags = {
-    pipeline = "lab-platform-hosted-zones"
-  }
-}
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Action = "sts:AssumeRole"
+#         Effect = "Allow"
+#         Principal = {
+#           AWS = [
+#             "arn:aws:iam::${var.nonprod_account_id}:root",
+#             "arn:aws:iam::${var.prod_account_id}:root",
+#           ]
+#         }
+#       }
+#     ]
+#   })
 
-resource "aws_iam_policy" "dns_manager_policy" {
-  name = "dns_manager_policy"
-  provider = aws.top_level_domain
-  policy = data.aws_iam_policy_document.dns_manager.json
-  tags = {
-    pipeline = "lab-platform-hosted-zones"
-  }
-}
+#   tags = {
+#     pipeline = "lab-platform-hosted-zones"
+#   }
+# }
 
-resource "aws_iam_policy_attachment" "attachment_dns_manager_policy_to_dns_manager" {
-  name = "dns_manager_policy_attachment"
-  provider = aws.top_level_domain
-  roles = [aws_iam_role.dns_manager.name]
-  policy_arn = aws_iam_policy.dns_manager_policy.arn
-}
+# resource "aws_iam_policy" "dns_manager_policy" {
+#   name = "dns_manager_policy"
+#   provider = aws.top_level_domain
+#   policy = data.aws_iam_policy_document.dns_manager.json
+#   tags = {
+#     pipeline = "lab-platform-hosted-zones"
+#   }
+# }
 
-data "aws_iam_policy_document" "dns_manager" {
+# resource "aws_iam_policy_attachment" "attachment_dns_manager_policy_to_dns_manager" {
+#   name = "dns_manager_policy_attachment"
+#   provider = aws.top_level_domain
+#   roles = [aws_iam_role.dns_manager.name]
+#   policy_arn = aws_iam_policy.dns_manager_policy.arn
+# }
 
-  statement {
-    effect = "Allow"
+# data "aws_iam_policy_document" "dns_manager" {
 
-    actions = [
-      "route53:GetChange"
-    ]
+#   statement {
+#     effect = "Allow"
 
-    resources = ["arn:aws:route53:::change/*"]
-  }
+#     actions = [
+#       "route53:GetChange"
+#     ]
 
-  statement {
-    effect = "Allow"
+#     resources = ["arn:aws:route53:::change/*"]
+#   }
 
-    actions = [
-      "route53:ChangeResourceRecordSets",
-      "route53:ListResourceRecordSets"
-    ]
+#   statement {
+#     effect = "Allow"
 
-    resources = ["arn:aws:route53:::hostedzone/*"]
-  }
+#     actions = [
+#       "route53:ChangeResourceRecordSets",
+#       "route53:ListResourceRecordSets"
+#     ]
 
-  statement {
-    effect = "Allow"
+#     resources = ["arn:aws:route53:::hostedzone/*"]
+#   }
 
-    actions = [
-      "route53:ListHostedZonesByName"
-    ]
+#   statement {
+#     effect = "Allow"
 
-    resources = ["*"]
-  }
-}
+#     actions = [
+#       "route53:ListHostedZonesByName"
+#     ]
+
+#     resources = ["*"]
+#   }
+# }

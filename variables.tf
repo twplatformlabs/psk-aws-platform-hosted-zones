@@ -1,10 +1,6 @@
 variable "top_level_domain" {}
 
-variable "prod_account_id" {
-  sensitive = true
-}
-
-variable "nonprod_account_id" {
+variable "account_id" {
   sensitive = true
 }
 
