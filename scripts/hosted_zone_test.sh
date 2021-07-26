@@ -2,7 +2,7 @@
 export ENVIRONMENT=$1
 export ACCOUNT=$2
 export ASSUME_ROLE=$(cat ${ENVIRONMENT}.auto.tfvars.json | jq -r .assume_role)
-export AWS_ACCOUNT_ID=$(cat ${ENVIRONMENT}.auto.tfvars.json | jq -r .${ACCOUNT}_account_id)
+export AWS_ACCOUNT_ID=$(cat ${ENVIRONMENT}.auto.tfvars.json | jq -r .account_id)
 
 aws sts assume-role --output json --role-arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/${ASSUME_ROLE} --role-session-name awspec-test > credentials
 
