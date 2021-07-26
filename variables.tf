@@ -1,5 +1,5 @@
 variable "top_level_domain" {}
-
+variable "aws_region" {}
 variable "account_id" {
   sensitive = true
 }
