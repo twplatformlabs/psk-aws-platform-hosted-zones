@@ -56,13 +56,6 @@ workflows:
           before-terraform:
             - set-environment:
                 acct: multiaccount
-          after-terraform:
-            - run:
-                name: test hosted zone configuration
-                environment:
-                  TEST_ENV: multiaccount
-                command: |
-                  bash scripts/hosted_zone_test.sh multiaccount nonprod
           requires:
             - approve-hosted-zone-changes
           filters: *on-push-main
