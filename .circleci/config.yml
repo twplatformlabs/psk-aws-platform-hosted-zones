@@ -2,7 +2,23 @@
 version: 2.1
 
 orbs:
-  terraform: feedyard/terraform@0.6.0
+  terraform: twdps/terraform@0.4.0
+
+# ==== global pipeline parameters
+
+parameters:
+  terraform-version:
+    description: terraform version for all jobs
+    type: string
+    default: "1.0.6"
+  context:
+    description: circleci context for all jobs
+    type: string
+    default: twdps-core-labs-team
+  shell-options:
+    description: shell options for all jobs
+    type: string
+    default: secrethub run -- /bin/sh -eo pipefail
 
 # git push: release
 on-push-main: &on-push-main
@@ -34,9 +50,10 @@ workflows:
     jobs:
       - terraform/plan:
           name: hosted-zone-change-plan
-          context: twdps-core-labs-team
-          shell: secrethub run -- /bin/sh -eo pipefail
+          context: << pipeline.parameters.context >>
+          shell: << pipeline.parameters.shell-options >>
           workspace: state
+          terraform-version: << pipeline.parameters.terraform-version >>
           before-terraform:
             - set-environment:
                 acct: multiaccount
@@ -50,9 +67,10 @@ workflows:
 
       - terraform/apply:
           name: hosted-zone-change-apply
-          context: twdps-core-labs-team
-          shell: secrethub run -- /bin/sh -eo pipefail
+          context: << pipeline.parameters.context >>
+          shell: << pipeline.parameters.shell-options >>
           workspace: state
+          terraform-version: << pipeline.parameters.terraform-version >>
           before-terraform:
             - set-environment:
                 acct: multiaccount
