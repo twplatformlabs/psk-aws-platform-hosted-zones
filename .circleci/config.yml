@@ -10,7 +10,7 @@ parameters:
   terraform-version:
     description: terraform version for all jobs
     type: string
-    default: "1.0.6"
+    default: "1.1.2"
   context:
     description: circleci context for all jobs
     type: string
@@ -20,12 +20,19 @@ parameters:
     type: string
     default: secrethub run -- /bin/sh -eo pipefail
 
-# git push: release
+# git push: run terraform plan
 on-push-main: &on-push-main
   branches:
     only: /main/
   tags:
     ignore: /.*/
+
+# git tag: release - terraform apply
+on-tag-main: &on-tag-main
+  branches:
+    ignore: /.*/
+  tags:
+    only: /.*/
 
 commands:
 
@@ -59,12 +66,6 @@ workflows:
                 acct: multiaccount
           filters: *on-push-main
 
-      - approve-hosted-zone-changes:
-          type: approval
-          requires:
-            - hosted-zone-change-plan
-          filters: *on-push-main
-
       - terraform/apply:
           name: hosted-zone-change-apply
           context: << pipeline.parameters.context >>
@@ -74,6 +75,4 @@ workflows:
           before-terraform:
             - set-environment:
                 acct: multiaccount
-          requires:
-            - approve-hosted-zone-changes
-          filters: *on-push-main
+          filters: *on-tag-main
