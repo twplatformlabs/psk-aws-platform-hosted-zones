@@ -8,7 +8,7 @@
 </div>
 <br />
 
-Create multiaccount subdomain hosted zones and zone delegations.  
+Manage multiaccount subdomain hosted zones and zone delegations.  
 
 ## lab managed domains (account where top level domain resides)
 
