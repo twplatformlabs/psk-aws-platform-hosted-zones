@@ -20,7 +20,7 @@ parameters:
   shell-options:
     description: shell options for all jobs
     type: string
-    default: op run --env-file=op.env -- /bin/bash -eo pipefail
+    default: op run --env-file=op.env -- /bin/bash
 
 # git push: run terraform plan
 on-push-main: &on-push-main
