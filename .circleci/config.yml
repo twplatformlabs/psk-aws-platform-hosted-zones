@@ -2,9 +2,9 @@
 version: 2.1
 
 orbs:
-  terraform: twdps/terraform@0.4.0
+  terraform: twdps/terraform@0.5.0
   # used for github-release-notes feature
-  executor-tools: twdps/executor-tools@0.2.0
+  executor-tools: twdps/executor-tools@0.8.0
 
 # ==== global pipeline parameters
 
@@ -12,7 +12,7 @@ parameters:
   terraform-version:
     description: terraform version for all jobs
     type: string
-    default: "1.1.2"
+    default: "1.2.2"
   context:
     description: circleci context for all jobs
     type: string
@@ -20,7 +20,7 @@ parameters:
   shell-options:
     description: shell options for all jobs
     type: string
-    default: secrethub run -- /bin/sh -eo pipefail
+    default: op run --env-file=op.env -- /bin/bash -eo pipefail
 
 # git push: run terraform plan
 on-push-main: &on-push-main
@@ -47,10 +47,10 @@ commands:
     steps:
       - run:
           name: set ~/.terraformrc
-          command: secrethub inject -i tpl/terraformrc.tpl -o ~/.terraformrc
+          command: op inject -i tpl/terraformrc.tpl -o ~/.terraformrc
       - run:
           name: set << parameters.acct >> environment variables
-          command: secrethub inject -i environments/<< parameters.acct >>.auto.tfvars.json.tpl -o << parameters.acct >>.auto.tfvars.json
+          command: op inject -i environments/<< parameters.acct >>.auto.tfvars.json.tpl -o << parameters.acct >>.auto.tfvars.json
 
 workflows:
   version: 2
