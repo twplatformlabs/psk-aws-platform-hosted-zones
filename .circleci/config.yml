@@ -71,10 +71,15 @@ workflows:
       - terraform/apply:
           name: hosted-zone-change-apply
           context: << pipeline.parameters.context >>
-          shell: << pipeline.parameters.shell-options >>
+          # shell: << pipeline.parameters.shell-options >>
           workspace: state
           terraform-version: << pipeline.parameters.terraform-version >>
           before-terraform:
+            - run:
+                name: inject environment variables
+                command: |
+                  op inject -i op.prod.env -o $BASH_ENV
+                  source $BASH_ENV
             - set-environment:
                 acct: multiaccount
           filters: *on-tag-main
