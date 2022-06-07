@@ -64,11 +64,11 @@ workflows:
           workspace: state
           terraform-version: << pipeline.parameters.terraform-version >>
           before-terraform:
-            # - run:
-            #     name: inject environment variables
-            #     command: |
-            #       op inject -i op.env -o $BASH_ENV
-            #       source $BASH_ENV
+            - run:
+                name: inject environment variables
+                command: |
+                  op inject -i op.env -o $BASH_ENV
+                  source $BASH_ENV
             - set-environment:
                 acct: multiaccount
           filters: *on-push-main
