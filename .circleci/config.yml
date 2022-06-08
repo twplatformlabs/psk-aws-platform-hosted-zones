@@ -3,6 +3,7 @@ version: 2.1
 
 orbs:
   terraform: twdps/terraform@0.5.0
+  op: twdps/onepassword@1.0.0
   # used for github-release-notes feature
   executor-tools: twdps/executor-tools@0.8.0
 
@@ -45,6 +46,8 @@ commands:
         type: string
         default: ''
     steps:
+      - op/env:
+          env-file: op.env
       - run:
           name: set ~/.terraformrc
           command: op inject -i tpl/terraformrc.tpl -o ~/.terraformrc
@@ -60,15 +63,10 @@ workflows:
       - terraform/plan:
           name: hosted-zone-change-plan
           context: << pipeline.parameters.context >>
-          shell: << pipeline.parameters.shell-options >>
+          #shell: << pipeline.parameters.shell-options >>
           workspace: state
           terraform-version: << pipeline.parameters.terraform-version >>
           before-terraform:
-            - run:
-                name: inject environment variables
-                command: |
-                  op inject -i op.env -o $BASH_ENV
-                  source $BASH_ENV
             - set-environment:
                 acct: multiaccount
           filters: *on-push-main
@@ -76,23 +74,19 @@ workflows:
       - terraform/apply:
           name: hosted-zone-change-apply
           context: << pipeline.parameters.context >>
-          shell: << pipeline.parameters.shell-options >>
+          #shell: << pipeline.parameters.shell-options >>
           workspace: state
           terraform-version: << pipeline.parameters.terraform-version >>
           before-terraform:
-            # - run:
-            #     name: inject environment variables
-            #     command: |
-            #       op inject -i op.env -o $BASH_ENV
-            #       source $BASH_ENV
             - set-environment:
                 acct: multiaccount
           filters: *on-tag-main
 
-  generate-release-notes:
-    jobs:
-      - executor-tools/release:
-          name: release-lab-platform-hosted-zones
-          context: << pipeline.parameters.context >>
-          shell: << pipeline.parameters.shell-options >>
-          filters: *on-tag-main
+  # generate-release-notes:
+  #   jobs:
+  #     - executor-tools/release:
+  #         name: release-lab-platform-hosted-zones
+  #         context: << pipeline.parameters.context >>
+  #         shell: << pipeline.parameters.shell-options >>
+  #         on-tag: true
+  #         filters: *on-tag-main
