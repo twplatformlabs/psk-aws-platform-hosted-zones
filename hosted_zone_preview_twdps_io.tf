@@ -1,14 +1,14 @@
-# # define a provider for the managing account of the subdomain
-# provider "aws" {
-#   alias  = "subdomain_preview_twdps_io"
-#   region = "us-east-2"
-#   assume_role {
-#     role_arn     = "arn:aws:iam::${var.nonprod_account_id}:role/${var.assume_role}"
-#     session_name = "lab-platform-hosted-zones"
-#   }
-# }
+# define a provider for the managing account of the subdomain
+provider "aws" {
+  alias  = "subdomain_preview_twdps_io"
+  region = "us-east-2"
+  assume_role {
+    role_arn     = "arn:aws:iam::${var.nonprod_account_id}:role/${var.assume_role}"
+    session_name = "lab-platform-hosted-zones"
+  }
+}
 
-# # create the subdomain
+# create the subdomain
 # module "subdomain_preview_twdps_io" {
 #   source  = "terraform-aws-modules/route53/aws//modules/zones"
 #   version = "2.0.0"
