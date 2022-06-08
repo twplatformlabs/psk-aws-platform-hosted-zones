@@ -63,7 +63,7 @@ workflows:
       - terraform/plan:
           name: hosted-zone-change-plan
           context: << pipeline.parameters.context >>
-          #shell: << pipeline.parameters.shell-options >>
+          shell: << pipeline.parameters.shell-options >>
           workspace: state
           terraform-version: << pipeline.parameters.terraform-version >>
           before-terraform:
@@ -74,7 +74,7 @@ workflows:
       - terraform/apply:
           name: hosted-zone-change-apply
           context: << pipeline.parameters.context >>
-          #shell: << pipeline.parameters.shell-options >>
+          shell: << pipeline.parameters.shell-options >>
           workspace: state
           terraform-version: << pipeline.parameters.terraform-version >>
           before-terraform:
