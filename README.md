@@ -18,3 +18,5 @@ Manage multiaccount subdomain hosted zones and zone delegations.
 ### single declarative state
 
 This is a single declarative state configuration maintenance pipeline. Multiple aws account providers are configured in the same plan to reconcile the dependent state between aws accounts and delegation zones. The top level domains are assumed to already exist.  
+
+Note: this patterns applies for domains owned by the platform. Supporting customers who need to use their own domains is implemented through an operator and are therefore, in effect, are self-managed by the customer. 
