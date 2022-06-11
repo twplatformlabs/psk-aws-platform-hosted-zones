@@ -56,11 +56,11 @@ commands:
 
 workflows:
   version: 2
-  lab-platform-hosted-zones:
 
+  hosted-zones change plan:
     jobs:
       - terraform/plan:
-          name: hosted-zone-change-plan
+          name: hosted-zones change plan
           context: << pipeline.parameters.context >>
           shell: << pipeline.parameters.shell-options >>
           workspace: state
@@ -70,8 +70,11 @@ workflows:
                 acct: multiaccount
           filters: *on-push-main
 
+
+  hosted-zones release:
+    jobs:
       - terraform/apply:
-          name: hosted-zone-change-apply
+          name: hosted-zones release
           context: << pipeline.parameters.context >>
           shell: << pipeline.parameters.shell-options >>
           workspace: state
