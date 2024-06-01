@@ -10,7 +10,7 @@
 </div>
 <br />
 
-Multi0-account subdomain hosted zones and zone delegations.  
+Multi-account subdomain hosted zones and zone delegations.  
 
 ## psk aws managed domains
 | domain         | top-level domain account |
