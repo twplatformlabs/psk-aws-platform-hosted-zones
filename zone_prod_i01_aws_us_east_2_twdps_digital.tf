@@ -52,7 +52,7 @@ module "subdomain_zone_delegation_prod_i01_aws_us_east_2_twdps_digital" {
       ttl             = 172800
       zone_id         = data.aws_route53_zone.zone_id_twdps_digital.id
       allow_overwrite = true
-      records         = lookup(module.subdomain_prod_i01_aws_us_east_2_twdps_digital.route53_zone_name_servers,"prod-i01-aws-us-east-2.${local.domain_twdps_digital}")
+      records         = module.subdomain_prod_i01_aws_us_east_2_twdps_digital.route53_zone_name_servers["prod-i01-aws-us-east-2.${local.domain_twdps_digital}"]
     }
   ]
 

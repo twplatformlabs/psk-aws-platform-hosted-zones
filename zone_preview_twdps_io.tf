@@ -52,7 +52,7 @@ module "subdomain_zone_delegation_preview_twdps_io" {
       ttl             = 172800
       zone_id         = data.aws_route53_zone.zone_id_twdps_io.id
       allow_overwrite = true
-      records         = lookup(module.subdomain_preview_twdps_io.route53_zone_name_servers,"preview.${local.domain_twdps_io}")
+      records         = module.subdomain_preview_twdps_io.route53_zone_name_servers["preview.${local.domain_twdps_io}"]
     }
   ]
 
