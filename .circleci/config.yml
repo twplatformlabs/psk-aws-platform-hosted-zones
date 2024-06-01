@@ -106,5 +106,5 @@ workflows:
             - op/env:
                 env-file: op.env
           requires:
-            - ahosted-zones release
+            - hosted-zones release
           filters: *on-tag-main
