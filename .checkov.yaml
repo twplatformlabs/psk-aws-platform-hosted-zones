@@ -10,5 +10,6 @@ mask: []
 secrets-scan-file-type: []
 summary-position: top
 skip-check:
+  - CKV_TF_1         # not supported by terraform registry
   - CKV2_AWS_38
   - CKV2_AWS_39
