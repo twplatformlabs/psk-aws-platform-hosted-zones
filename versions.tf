@@ -1,5 +1,5 @@
 terraform {
-  required_version = "~> 1.2"
+  required_version = "~> 1.8"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -10,7 +10,7 @@ terraform {
     hostname     = "app.terraform.io"
     organization = "twdps"
     workspaces {
-      prefix = "lab-platform-hosted-zones-"
+      prefix = "psk-aws-platform-hosted-zones-"
     }
   }
 }

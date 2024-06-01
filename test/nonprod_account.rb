@@ -4,11 +4,11 @@ describe route53_hosted_zone('twdps.digital.') do
   it { should exist }
 end
 
-describe route53_hosted_zone('sandbox-us-east-2.twdps.io.') do
+describe route53_hosted_zone('sbx-i01-aws-us-east-1.twdps.io.') do
   it { should exist }
 end
 
-describe route53_hosted_zone('sandbox-us-east-2.twdps.digital.') do
+describe route53_hosted_zone('sbx-i01-aws-us-east-1.twdps.digital.') do
   it { should exist }
 end
 

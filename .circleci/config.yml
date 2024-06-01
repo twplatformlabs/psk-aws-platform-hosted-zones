@@ -2,34 +2,20 @@
 version: 2.1
 
 orbs:
-  terraform: twdps/terraform@0.6.0
-  op: twdps/onepassword@1.0.0
-  do: twdps/pipeline-events@0.1.0
+  terraform: twdps/terraform@3.0.0
+  op: twdps/onepassword@3.0.0
+  do: twdps/pipeline-events@4.1.0
 
-# ==== global pipeline parameters
+globals:
+  - &context empc-lab
+  - &executor-image twdps/circleci-infra-aws:alpine-7.2.1
 
-parameters:
-  terraform-version:
-    description: terraform version for all jobs
-    type: string
-    default: "1.2.2"
-  context:
-    description: circleci context for all jobs
-    type: string
-    default: twdps-core-labs-team
-  shell-options:
-    description: shell options for all jobs
-    type: string
-    default: op run --env-file=op.env -- /bin/bash
-
-# git push: run terraform plan
 on-push-main: &on-push-main
   branches:
     only: /main/
   tags:
     ignore: /.*/
 
-# git tag: release - terraform apply
 on-tag-main: &on-tag-main
   branches:
     ignore: /.*/
@@ -41,64 +27,84 @@ commands:
   set-environment:
     description: generate environment credentials and configuration from templates
     parameters:
-      acct:
+      account:
         type: string
-        default: ''
     steps:
       - op/env:
           env-file: op.env
+      - op/tpl:
+          tpl-path: environments
+          tpl-file: << parameters.account >>.auto.tfvars.json
+      - terraform/terraformrc
+      - do/bash-functions
+
+  integration-tests:
+    parameters:
+      account:
+        type: string
+    steps:
       - run:
-          name: set ~/.terraformrc
-          command: op inject -i tpl/terraformrc.tpl -o ~/.terraformrc
+          name: integration test nonprod account
+          command: bash scripts/hosted_zone_test.sh << parameters.account >> nonprod
       - run:
-          name: set << parameters.acct >> environment variables
-          command: op inject -i environments/<< parameters.acct >>.auto.tfvars.json.tpl -o << parameters.acct >>.auto.tfvars.json
+          name: integration test prod account
+          command: bash scripts/hosted_zone_test.sh << parameters.account >> prod
 
 workflows:
   version: 2
 
   hosted-zones change plan:
     jobs:
-      - terraform/plan:
-          name: hosted-zones change plan
-          context: << pipeline.parameters.context >>
-          shell: << pipeline.parameters.shell-options >>
+      - terraform/static-analysis:
+          name: static code analysis
+          context: *context
+          executor-image: *executor-image
           workspace: state
-          terraform-version: << pipeline.parameters.terraform-version >>
-          before-terraform:
-            - set-environment:
-                acct: multiaccount
+          tflint-scan: true
+          tflint-provider: aws
+          trivy-scan: true
+          before-static-analysis:
+            - op/env:
+                env-file: op.env
           filters: *on-push-main
 
+      - terraform/plan:
+          name: hosted-zones change plan
+          context: *context
+          executor-image: *executor-image
+          workspace: state
+          checkov-scan: true
+          before-plan:
+            - set-environment:
+                account: multiaccount
+          filters: *on-push-main
 
   hosted-zones release:
     jobs:
       - terraform/apply:
           name: hosted-zones release
-          context: << pipeline.parameters.context >>
-          shell: << pipeline.parameters.shell-options >>
+          context: *context
           workspace: state
-          terraform-version: << pipeline.parameters.terraform-version >>
-          before-terraform:
+          before-apply:
             - set-environment:
-                acct: multiaccount
-          after-terraform:
-            - do/circle-deploy
-            - do/slack-webhook:
-                message: lab-platform-hosted-zones release
-                webhook-url: $LAB_EVENTS_CHANNEL_WEBHOOK
-            - run:
-                name: test hosted zones 
-                command: |
-                  bash scripts/hosted_zone_test.sh multiaccount nonprod
-                  bash scripts/hosted_zone_test.sh multiaccount prod
+                account: multiaccount
+          after-apply:
+            - integration-tests:
+                account: multiaccount
+            - do/slack-bot:
+                channel: lab-events
+                message: Release psk-aws-platform-hosted-zones
+                include-link: true
+                include-tag: true
           filters: *on-tag-main
 
-  # generate-release-notes:
-  #   jobs:
-  #     - executor-tools/release:
-  #         name: release-lab-platform-hosted-zones
-  #         context: << pipeline.parameters.context >>
-  #         shell: << pipeline.parameters.shell-options >>
-  #         on-tag: true
-  #         filters: *on-tag-main
+      - do/release:
+          name: generate release notes
+          context: *context
+          on-tag: true
+          before-release:
+            - op/env:
+                env-file: op.env
+          requires:
+            - ahosted-zones release
+          filters: *on-tag-main

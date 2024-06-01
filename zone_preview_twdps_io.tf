@@ -1,42 +1,42 @@
-# *.prod.twdps.io
+# *.preview.twdps.io
 
 # define a provider in the account where this subdomain will be managed
 provider "aws" {
-  alias  = "subdomain_prod_twdps_io"
+  alias  = "subdomain_preview_twdps_io"
   region = "us-east-1"
   assume_role {
-    role_arn     = "arn:aws:iam::${var.prod_account_id}:role/${var.assume_role}"
-    session_name = "lab-platform-hosted-zones"
+    role_arn     = "arn:aws:iam::${var.nonprod_account_id}:role/${var.assume_role}"
+    session_name = "psk-aws-platform-hosted-zones"
   }
 }
 
 # create a route53 hosted zone for the subdomain in the account defined by the provider above
-module "subdomain_prod_twdps_io" {
+module "subdomain_preview_twdps_io" {
   source  = "terraform-aws-modules/route53/aws//modules/zones"
-  version = "2.0.0"
+  version = "2.11.1"
   create  = true
 
   providers = {
-    aws = aws.subdomain_prod_twdps_io
+    aws = aws.subdomain_preview_twdps_io
   }
 
   zones = {
-    "prod.${local.domain_twdps_io}" = {
+    "preview.${local.domain_twdps_io}" = {
       tags = {
-        cluster = "prod"
+        cluster = "sbx-i01-aws-us-east-1"
       }
     }
   }
 
   tags = {
-    pipeline = "lab-platform-hosted-zones"
+    pipeline = "psk-aws-platform-hosted-zones"
   }
 }
 
 # Create a zone delegation in the top level domain for this subdomain
-module "subdomain_zone_delegation_prod_twdps_io" {
+module "subdomain_zone_delegation_preview_twdps_io" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
-  version = "2.0.0"
+  version = "2.11.1"
   create  = true
 
   providers = {
@@ -47,14 +47,14 @@ module "subdomain_zone_delegation_prod_twdps_io" {
   zone_name = local.domain_twdps_io
   records = [
     {
-      name            = "prod"
+      name            = "preview"
       type            = "NS"
       ttl             = 172800
       zone_id         = data.aws_route53_zone.zone_id_twdps_io.id
       allow_overwrite = true
-      records         = lookup(module.subdomain_prod_twdps_io.route53_zone_name_servers,"prod.${local.domain_twdps_io}")
+      records         = lookup(module.subdomain_preview_twdps_io.route53_zone_name_servers,"preview.${local.domain_twdps_io}")
     }
   ]
 
-  depends_on = [module.subdomain_prod_twdps_io]
+  depends_on = [module.subdomain_preview_twdps_io]
 }

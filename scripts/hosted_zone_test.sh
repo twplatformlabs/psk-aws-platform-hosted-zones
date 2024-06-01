@@ -1,22 +1,19 @@
 #!/usr/bin/env bash
+source bash-functions.sh
+set -eo pipefail
 
-export ENVIRONMENT=$1
-export ACCOUNT=$2
-export ACCOUNT_VAR=".${ACCOUNT}_account_id"
-export ASSUME_ROLE=$(cat ${ENVIRONMENT}.auto.tfvars.json | jq -r .assume_role)
-export AWS_ACCOUNT_ID=$(cat ${ENVIRONMENT}.auto.tfvars.json | jq -r .${ACCOUNT}_account_id)
+export environment=$1
+export account=$2
+export aws_account_id=$(jq -er ."${account}"_account_id "$environment".auto.tfvars.json)
+export aws_assume_role=$(jq -er .aws_assume_role "$environment".auto.tfvars.json)
+export AWS_DEFAULT_REGION=$(jq -er .aws_region "$environment".auto.tfvars.json)
 
-echo "debug:"
-echo "ENVIRONMENT ${ENVIRONMENT}"
-echo "ACCOUNT ${ACCOUNT}"
-echo "ACCOUNT_VAR ${ACCOUNT_VAR}"
-echo "ASSUME_ROLE ${ASSUME_ROLE}"
+echo "environment $environment"
+echo "account $account"
+echo "aws_account_id $aws_account_id"
+echo "aws_assume_role $aws_assume_role"
+echo "AWS_DEFAULT_REGION $AWS_DEFAULT_REGION"
 
-aws sts assume-role --output json --role-arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/${ASSUME_ROLE} --role-session-name lab-platform-hosted-zones-test > credentials
+awsAssumeRole "${aws_account_id}" "${aws_assume_role}"
 
-export AWS_ACCESS_KEY_ID=$(cat credentials | jq -r ".Credentials.AccessKeyId")
-export AWS_SECRET_ACCESS_KEY=$(cat credentials | jq -r ".Credentials.SecretAccessKey")
-export AWS_SESSION_TOKEN=$(cat credentials | jq -r ".Credentials.SessionToken")
-export AWS_DEFAULT_REGION=$(cat ${ENVIRONMENT}.auto.tfvars.json | jq -r .aws_region)
-
-rspec test/${ACCOUNT}_account.rb
+rspec "test/${accout}_account.rb"
