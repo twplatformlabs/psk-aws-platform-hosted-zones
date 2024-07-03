@@ -16,4 +16,4 @@ echo "AWS_DEFAULT_REGION $AWS_DEFAULT_REGION"
 
 awsAssumeRole "${aws_account_id}" "${aws_assume_role}"
 
-rspec "test/${accout}_account.rb"
+rspec "test/${account}_account.rb"
