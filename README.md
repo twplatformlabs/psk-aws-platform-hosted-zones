@@ -18,21 +18,18 @@ Multi-account subdomain hosted zones and zone delegations.
 | twdps.io       | aws-dps-1                |  
 | twdps.digital  | aws-dps-2                |
 
-**Creates the following hosted zones in the specified account:**  
+**Creates the following, cluster-specific hosted zones in the specified account:**  
 | hosted zone                              | aws-dps-1 | aws-dps-2 |
 |------------------------------------------|:---------:|:---------:|
 | sandbox-i01-aws-us-east-1.twdps.digital  |           |     •     |
 | sandbox-i01-aws-us-east-1.twdps.io       |           |     •     |
-| preview.twdps.digital                    |           |     •     |
-| preview.twdps.io                         |           |     •     |
 | prod-i01-aws-us-east-2.twdps.digital     |     •     |           |
 | prod-i01-aws-us-east-2.twdps.io          |     •     |           |
-| dev.twdps.digital                        |     •     |           |
-| dev.twdps.io                             |     •     |           |
-| qa.twdps.digital                         |     •     |           |
-| qa.twdps.io                              |     •     |           |
-| prod.twdps.digital                       |     •     |           |
-| prod.twdps.io                            |     •     |           |
+
+*General ingress patterns related to the top-level domains supported by the platform will be managed through a dedicated platform API. See the (psk-platform-simple-teams-and-ns)[https://github.com/ThoughtWorks-DPS/psk-platform-simple-teams-and-ns] for a simple strategy for managing ingress while the dedicated management API is in development.  
+
+Keep in mind that it is not uncommon to adopt a relatively static pattern for domain ingress where internal developers have a limited set of choices because of the product decisions made. Where that is true, and therefor no custom API experiences is needed, it is a good strategy to simple include that DNS management here as a simple all-in-one location.  
+
 
 ### single declarative state
 
