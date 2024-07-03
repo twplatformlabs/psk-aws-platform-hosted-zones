@@ -6,7 +6,7 @@ export environment=$1
 export account=$2
 export aws_account_id=$(jq -er ."${account}"_account_id "$environment".auto.tfvars.json)
 export aws_assume_role=$(jq -er .aws_assume_role "$environment".auto.tfvars.json)
-export AWS_DEFAULT_REGION=$(jq -er .aws_region "$environment".auto.tfvars.json)
+export AWS_DEFAULT_REGION=us-east-1
 
 echo "environment $environment"
 echo "account $account"
