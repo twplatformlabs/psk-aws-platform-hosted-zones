@@ -5,7 +5,7 @@ provider "aws" {
   alias  = "subdomain_preview_twdps_io"
   region = "us-east-1"
   assume_role {
-    role_arn     = "arn:aws:iam::${var.nonprod_account_id}:role/${var.domain_assume_role}"
+    role_arn     = "arn:aws:iam::${var.nonprod_account_id}:role/${var.assume_role}"
     session_name = "psk-aws-platform-hosted-zones"
   }
 }
