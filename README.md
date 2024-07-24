@@ -42,7 +42,6 @@ Multi-account subdomain hosted zones and zone delegations.
 
 Keep in mind that it is not uncommon to adopt a relatively static pattern for domain ingress where internal developers have a limited set of choices because of the product decisions made. Where that is true, and therefor no custom API experiences is needed, it is a good strategy to simple include that DNS management here as a simple all-in-one location.  
 
-
 ### single declarative state
 
 This is a single declarative state configuration maintenance pipeline. Multiple aws account providers are configured in the same plan to reconcile the dependent state between aws accounts and delegation zones. The top level domains are assumed to already exist.  
