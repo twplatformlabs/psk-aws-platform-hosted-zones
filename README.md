@@ -15,30 +15,32 @@ Multi-account subdomain hosted zones and zone delegations.
 _note. in these charts, *.domain indicates the hosted zone delegation will manage every subdomain no specifically delegated._  
 
 ## psk aws managed domains
-| domain         | top-level domain account |
-|----------------|:------------------------:|
-| twdps.io       | aws-dps-1                |  
-| twdps.digital  | aws-dps-2                |
+| domain           | top-level domain account |
+|------------------|:------------------------:|
+| *.twdps.io       | aws-dps-1                |  
+| *.twdps.digital  | aws-dps-2                |
 
 **Creates the following, cluster-specific hosted zones in the specified account:**  
-| hosted zone                              | aws-dps-1 | aws-dps-2 |
-|------------------------------------------|:---------:|:---------:|
-| sandbox-i01-aws-us-east-1.twdps.digital  |           |     •     |
-| sandbox-i01-aws-us-east-1.twdps.io       |           |     •     |
-| prod-i01-aws-us-east-2.twdps.digital     |     •     |           |
-| prod-i01-aws-us-east-2.twdps.io          |     •     |           |
+| hosted zone                                | aws-dps-1 | aws-dps-2 |
+|--------------------------------------------|:---------:|:---------:|
+| *.sandbox-i01-aws-us-east-1.twdps.digital  |           |     •     |
+| *.sandbox-i01-aws-us-east-1.twdps.io       |           |     •     |
+| *.prod-i01-aws-us-east-2.twdps.digital     |     •     |           |
+| *.prod-i01-aws-us-east-2.twdps.io          |     •     |           |
 
 **Creates the following environment specific zones:**
-| gateway                                 | aws-dps-1 | aws-dps-2 |
-|-----------------------------------------|:---------:|:---------:|
-| preview.twdps.digital-gateway           |           |     •     |
-| preview.twdps.io-gateway                |           |     •     |
-| dev.twdps.digital-gateway               |     •     |           |
-| dev.twdps.io-gateway                    |     •     |           |
-| qa.twdps.digital-gateway                |     •     |           |
-| qa.twdps.io-gateway                     |     •     |           |
-| prod.twdps.digital-gateway              |     •     |           |
-| prod.twdps.io-gateway                   |     •     |           |
+| gateway                                   | aws-dps-1 | aws-dps-2 |
+|-------------------------------------------|:---------:|:---------:|
+| *.preview.twdps.digital-gateway           |           |     •     |
+| *.preview.twdps.io-gateway                |           |     •     |
+| *.dev.twdps.digital-gateway               |     •     |           |
+| *.dev.twdps.io-gateway                    |     •     |           |
+| *.qa.twdps.digital-gateway                |     •     |           |
+| *.qa.twdps.io-gateway                     |     •     |           |
+| *.api.twdps.digital-gateway               |     •     |           |
+| *.api.twdps.io-gateway                    |     •     |           |
+
+By convention, UI (SPA, static site, etc) resides on the *.twdps.io and .digital domains. Direct traffic to on-cluster app is permissible, though it is more common to use static-sites, single-page apps, and so on (S3, @Edge lambda, CDN). And it is expected that through CDN objects the traffic is managed on specific paths (twdps.io/page or 33.twdps.io/page etc) and traffic not expressly so managed continues on to the cluster.  
 
 *General ingress patterns related to the top-level domains supported by the platform will be managed through a dedicated platform API. See the (psk-platform-simple-teams-and-ns)[https://github.com/ThoughtWorks-DPS/psk-platform-simple-teams-and-ns] for a simple strategy for managing ingress while the dedicated management API is in development.  
 
