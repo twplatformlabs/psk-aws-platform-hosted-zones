@@ -12,6 +12,8 @@
 
 Multi-account subdomain hosted zones and zone delegations.  
 
+_note. in these charts, *.domain indicates the hosted zone delegation will manage every subdomain no specifically delegated._  
+
 ## psk aws managed domains
 | domain         | top-level domain account |
 |----------------|:------------------------:|
