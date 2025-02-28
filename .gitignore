@@ -2,4 +2,5 @@ multiaccount.auto.tfvars.json
 credentials
 .terraform*
 source.env
+bash-functions.sh
 .ruby-version

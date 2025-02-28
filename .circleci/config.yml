@@ -4,11 +4,11 @@ version: 2.1
 orbs:
   terraform: twdps/terraform@3.1.1
   op: twdps/onepassword@3.0.0
-  do: twdps/pipeline-events@4.1.0
+  do: twdps/pipeline-events@5.01
 
 globals:
-  - &context empc-lab
-  - &executor-image twdps/circleci-infra-aws:alpine-7.8.0
+  - &context platform
+  - &executor-image twdps/circleci-infra-aws:alpine-7.9.1
 
 on-push-main: &on-push-main
   branches:
@@ -30,8 +30,7 @@ commands:
       account:
         type: string
     steps:
-      - op/env:
-          env-file: op.env
+      - op/env
       - op/tpl:
           tpl-path: environments
           tpl-file: << parameters.account >>.auto.tfvars.json
@@ -98,14 +97,13 @@ workflows:
                 include-tag: true
           filters: *on-tag-main
 
-      - do/release:
+      - do/gh-release:
           name: generate release notes
           context: *context
-          on-tag: true
-          additional-args: "--data-source=commits"
+          notes-from-file: release.md
+          include-commit-msg: true
           before-release:
-            - op/env:
-                env-file: op.env
+            - op/env
           requires:
             - hosted-zones release
           filters: *on-tag-main
