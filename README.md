@@ -52,30 +52,30 @@ This is a single declarative state configuration maintenance pipeline. Multiple 
 
 Note: this pattern is used for platform-managed domains that provide customers automated _right_-of-domain ingress.  
 
-**Deprecated**  
+## Deprecated
 These are the prior ThoughtWorks-DPS domains andn will be removed soon.  
-## psk aws managed domains
+
 | domain           | top-level domain account |
 |------------------|:------------------------:|
-| *.twdps.io       | aws-dps-1                |  
-| *.twdps.digital  | aws-dps-2                |
+| *.twdps.io       | aws-production           |  
+| *.twdps.digital  | aws-sandbox              |
 
 **Creates the following, cluster-specific hosted zones in the specified account:**  
-| hosted zone                                | aws-dps-1 | aws-dps-2 |
-|--------------------------------------------|:---------:|:---------:|
-| *.sandbox-i01-aws-us-east-1.twdps.digital  |           |     •     |
-| *.sandbox-i01-aws-us-east-1.twdps.io       |           |     •     |
-| *.prod-i01-aws-us-east-2.twdps.digital     |     •     |           |
-| *.prod-i01-aws-us-east-2.twdps.io          |     •     |           |
+| hosted zone                                | aws-production | aws-sandbox |
+|--------------------------------------------|:--------------:|:-----------:|
+| *.sandbox-i01-aws-us-east-1.twdps.digital  |                |      •      |
+| *.sandbox-i01-aws-us-east-1.twdps.io       |                |      •      |
+| *.prod-i01-aws-us-east-2.twdps.digital     |        •       |             |
+| *.prod-i01-aws-us-east-2.twdps.io          |        •       |             |
 
 **Creates the following environment specific zones:**
-| gateway                                   | aws-dps-1 | aws-dps-2 |
-|-------------------------------------------|:---------:|:---------:|
-| *.preview.twdps.digital-gateway           |           |     •     |
-| *.preview.twdps.io-gateway                |           |     •     |
-| *.dev.twdps.digital-gateway               |     •     |           |
-| *.dev.twdps.io-gateway                    |     •     |           |
-| *.qa.twdps.digital-gateway                |     •     |           |
-| *.qa.twdps.io-gateway                     |     •     |           |
-| *.api.twdps.digital-gateway               |     •     |           |
-| *.api.twdps.io-gateway                    |     •     |           |
+| gateway                                   | aws-production | aws-sandbox |
+|-------------------------------------------|:--------------:|:-----------:|
+| *.preview.twdps.digital-gateway           |                |      •      |
+| *.preview.twdps.io-gateway                |                |      •      |
+| *.dev.twdps.digital-gateway               |        •       |             |
+| *.dev.twdps.io-gateway                    |        •       |             |
+| *.qa.twdps.digital-gateway                |        •       |             |
+| *.qa.twdps.io-gateway                     |        •       |             |
+| *.api.twdps.digital-gateway               |        •       |             |
+| *.api.twdps.io-gateway                    |        •       |             |
