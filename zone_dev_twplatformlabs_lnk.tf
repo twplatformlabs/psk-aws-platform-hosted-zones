@@ -13,7 +13,7 @@ provider "aws" {
 # create a route53 hosted zone for the subdomain in the account defined by the provider above
 module "subdomain_dev_twplatformlabs_link" {
   source  = "terraform-aws-modules/route53/aws//modules/zones"
-  version = "4.1.0"
+  version = "5.0.0"
   create  = true
 
   providers = {
@@ -36,7 +36,7 @@ module "subdomain_dev_twplatformlabs_link" {
 # Create a zone delegation in the top level domain for this subdomain
 module "subdomain_zone_delegation_dev_twplatformlabs_link" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
-  version = "4.1.0"
+  version = "5.0.0"
   create  = true
 
   providers = {
