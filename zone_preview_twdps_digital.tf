@@ -10,51 +10,51 @@ provider "aws" {
   }
 }
 
-# create a route53 hosted zone for the subdomain in the account defined by the provider above
-module "subdomain_preview_twdps_digital" {
-  source  = "terraform-aws-modules/route53/aws//modules/zones"
-  version = "5.0.0"
-  create  = true
+# # create a route53 hosted zone for the subdomain in the account defined by the provider above
+# module "subdomain_preview_twdps_digital" {
+#   source  = "terraform-aws-modules/route53/aws//modules/zones"
+#   version = "5.0.0"
+#   create  = true
 
-  providers = {
-    aws = aws.subdomain_preview_twdps_digital
-  }
+#   providers = {
+#     aws = aws.subdomain_preview_twdps_digital
+#   }
 
-  zones = {
-    "preview.${local.domain_twdps_digital}" = {
-      tags = {
-        cluster = "sbx-i01-aws-us-east-1"
-      }
-    }
-  }
+#   zones = {
+#     "preview.${local.domain_twdps_digital}" = {
+#       tags = {
+#         cluster = "sbx-i01-aws-us-east-1"
+#       }
+#     }
+#   }
 
-  tags = {
-    pipeline = "psk-aws-platform-hosted-zones"
-  }
-}
+#   tags = {
+#     pipeline = "psk-aws-platform-hosted-zones"
+#   }
+# }
 
-# Create a zone delegation in the top level domain for this subdomain
-module "subdomain_zone_delegation_preview_twdps_digital" {
-  source  = "terraform-aws-modules/route53/aws//modules/records"
-  version = "5.0.0"
-  create  = true
+# # Create a zone delegation in the top level domain for this subdomain
+# module "subdomain_zone_delegation_preview_twdps_digital" {
+#   source  = "terraform-aws-modules/route53/aws//modules/records"
+#   version = "5.0.0"
+#   create  = true
 
-  providers = {
-    aws = aws.domain_twdps_digital
-  }
+#   providers = {
+#     aws = aws.domain_twdps_digital
+#   }
 
-  private_zone = false
-  zone_name = local.domain_twdps_digital
-  records = [
-    {
-      name            = "preview"
-      type            = "NS"
-      ttl             = 172800
-      zone_id         = data.aws_route53_zone.zone_id_twdps_digital.id
-      allow_overwrite = true
-      records         = module.subdomain_preview_twdps_digital.route53_zone_name_servers["preview.${local.domain_twdps_digital}"]
-    }
-  ]
+#   private_zone = false
+#   zone_name = local.domain_twdps_digital
+#   records = [
+#     {
+#       name            = "preview"
+#       type            = "NS"
+#       ttl             = 172800
+#       zone_id         = data.aws_route53_zone.zone_id_twdps_digital.id
+#       allow_overwrite = true
+#       records         = module.subdomain_preview_twdps_digital.route53_zone_name_servers["preview.${local.domain_twdps_digital}"]
+#     }
+#   ]
 
-  depends_on = [module.subdomain_preview_twdps_digital]
-}
+#   depends_on = [module.subdomain_preview_twdps_digital]
+# }

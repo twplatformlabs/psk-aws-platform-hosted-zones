@@ -10,51 +10,51 @@ provider "aws" {
   }
 }
 
-# create a route53 hosted zone for the subdomain in the account defined by the provider above
-module "subdomain_sbx_i01_aws_us_east_1_twdps_io" {
-  source  = "terraform-aws-modules/route53/aws//modules/zones"
-  version = "5.0.0"
-  create  = true
+# # create a route53 hosted zone for the subdomain in the account defined by the provider above
+# module "subdomain_sbx_i01_aws_us_east_1_twdps_io" {
+#   source  = "terraform-aws-modules/route53/aws//modules/zones"
+#   version = "5.0.0"
+#   create  = true
 
-  providers = {
-    aws = aws.subdomain_sbx_i01_aws_us_east_1_twdps_io
-  }
+#   providers = {
+#     aws = aws.subdomain_sbx_i01_aws_us_east_1_twdps_io
+#   }
 
-  zones = {
-    "sbx-i01-aws-us-east-1.${local.domain_twdps_io}" = {
-      tags = {
-        cluster = "sbx-i01-aws-us-east-1"
-      }
-    }
-  }
+#   zones = {
+#     "sbx-i01-aws-us-east-1.${local.domain_twdps_io}" = {
+#       tags = {
+#         cluster = "sbx-i01-aws-us-east-1"
+#       }
+#     }
+#   }
 
-  tags = {
-    pipeline = "psk-aws-platform-hosted-zones"
-  }
-}
+#   tags = {
+#     pipeline = "psk-aws-platform-hosted-zones"
+#   }
+# }
 
-# Create a zone delegation in the top level domain for this subdomain
-module "subdomain_zone_delegation_sbx_i01_aws_us_east_1_twdps_io" {
-  source  = "terraform-aws-modules/route53/aws//modules/records"
-  version = "5.0.0"
-  create  = true
+# # Create a zone delegation in the top level domain for this subdomain
+# module "subdomain_zone_delegation_sbx_i01_aws_us_east_1_twdps_io" {
+#   source  = "terraform-aws-modules/route53/aws//modules/records"
+#   version = "5.0.0"
+#   create  = true
 
-  providers = {
-    aws = aws.domain_twdps_io
-  }
+#   providers = {
+#     aws = aws.domain_twdps_io
+#   }
 
-  private_zone = false
-  zone_name = local.domain_twdps_io
-  records = [
-    {
-      name            = "sbx-i01-aws-us-east-1"
-      type            = "NS"
-      ttl             = 172800
-      zone_id         = data.aws_route53_zone.zone_id_twdps_io.id
-      allow_overwrite = true
-      records         = module.subdomain_sbx_i01_aws_us_east_1_twdps_io.route53_zone_name_servers["sbx-i01-aws-us-east-1.${local.domain_twdps_io}"]
-    }
-  ]
+#   private_zone = false
+#   zone_name = local.domain_twdps_io
+#   records = [
+#     {
+#       name            = "sbx-i01-aws-us-east-1"
+#       type            = "NS"
+#       ttl             = 172800
+#       zone_id         = data.aws_route53_zone.zone_id_twdps_io.id
+#       allow_overwrite = true
+#       records         = module.subdomain_sbx_i01_aws_us_east_1_twdps_io.route53_zone_name_servers["sbx-i01-aws-us-east-1.${local.domain_twdps_io}"]
+#     }
+#   ]
 
-  depends_on = [module.subdomain_sbx_i01_aws_us_east_1_twdps_io]
-}
+#   depends_on = [module.subdomain_sbx_i01_aws_us_east_1_twdps_io]
+# }
