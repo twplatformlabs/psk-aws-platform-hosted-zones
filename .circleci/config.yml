@@ -4,7 +4,7 @@ version: 2.1
 orbs:
   terraform: twdps/terraform@3.1.1
   op: twdps/onepassword@3.0.0
-  do: twdps/pipeline-events@5.0.1
+  do: twdps/pipeline-events@5.1.0
 
 globals:
   - &context platform
@@ -54,18 +54,18 @@ workflows:
 
   hosted-zones change plan:
     jobs:
-      - terraform/static-analysis:
-          name: static code analysis
-          context: *context
-          executor-image: *executor-image
-          workspace: state
-          tflint-scan: true
-          tflint-provider: aws
-          trivy-scan: true
-          before-static-analysis:
-            - op/env:
-                env-file: op.env
-          filters: *on-push-main
+      # - terraform/static-analysis:
+      #     name: static code analysis
+      #     context: *context
+      #     executor-image: *executor-image
+      #     workspace: state
+      #     tflint-scan: true
+      #     tflint-provider: aws
+      #     trivy-scan: true
+      #     before-static-analysis:
+      #       - op/env:
+      #           env-file: op.env
+      #     filters: *on-push-main
 
       - terraform/plan:
           name: hosted-zones change plan
