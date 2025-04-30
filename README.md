@@ -1,9 +1,6 @@
 <div align="center">
 	<p>
-		<img alt="Thoughtworks Logo" src="https://raw.githubusercontent.com/twplatformlabs/static/master/thoughtworks_flamingo_wave.png?sanitize=true" width=200 />
-    <br />
-		<img alt="DPS Title" src="https://raw.githubusercontent.com/twplatformlabs/static/master/EMPCPlatformStarterKitsImage.png?sanitize=true" width=350/>
-		<br />
+		<img alt="Thoughtworks Logo" src="https://raw.githubusercontent.com/twplatformlabs/static/master/psk_banner.png" width=800 />
 	</p>
   <h3>psk-aws-platform-hosted-zones</h3>
 	<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/twplatformlabs/psk-aws-platform-hosted-zones"></a> <a href="https://aws.amazon.com"><img src="https://img.shields.io/badge/-deployed-blank.svg?style=social&logo=amazon"></a>
@@ -51,31 +48,3 @@ Keep in mind that it is not uncommon to adopt a relatively static pattern for do
 This is a single declarative state configuration maintenance pipeline. Multiple aws account providers are configured in the same plan to reconcile the dependent state between aws accounts and delegation zones. The top level domains are assumed to already exist.  
 
 Note: this pattern is used for platform-managed domains that provide customers automated _right_-of-domain ingress.  
-
-## Deprecated
-These are the prior ThoughtWorks-DPS domains andn will be removed soon.  
-
-| domain           | top-level domain account |
-|------------------|:------------------------:|
-| *.twdps.io       | aws-production           |  
-| *.twdps.digital  | aws-sandbox              |
-
-**Creates the following, cluster-specific hosted zones in the specified account:**  
-| hosted zone                                | aws-production | aws-sandbox |
-|--------------------------------------------|:--------------:|:-----------:|
-| *.sandbox-i01-aws-us-east-1.twdps.digital  |                |      •      |
-| *.sandbox-i01-aws-us-east-1.twdps.io       |                |      •      |
-| *.prod-i01-aws-us-east-2.twdps.digital     |        •       |             |
-| *.prod-i01-aws-us-east-2.twdps.io          |        •       |             |
-
-**Creates the following environment specific zones:**
-| gateway                                   | aws-production | aws-sandbox |
-|-------------------------------------------|:--------------:|:-----------:|
-| *.preview.twdps.digital-gateway           |                |      •      |
-| *.preview.twdps.io-gateway                |                |      •      |
-| *.dev.twdps.digital-gateway               |        •       |             |
-| *.dev.twdps.io-gateway                    |        •       |             |
-| *.qa.twdps.digital-gateway                |        •       |             |
-| *.qa.twdps.io-gateway                     |        •       |             |
-| *.api.twdps.digital-gateway               |        •       |             |
-| *.api.twdps.io-gateway                    |        •       |             |
