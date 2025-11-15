@@ -2,7 +2,7 @@
 # Short-term zone delegation to Googcle Cloud DNS for tails-mpt project:
 
 # Create a zone delegation in the top level domain for this subdomain
-module "subdomain_zone_delegation_twmpt_twplatformlabs_org" {
+module "subdomain_zone_delegation_tails_twplatformlabs_org" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
   version = "5.0.0"
   create  = true
