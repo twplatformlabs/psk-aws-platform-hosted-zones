@@ -21,10 +21,10 @@ module "subdomain_zone_delegation_tails_twplatformlabs_org" {
       zone_id         = data.aws_route53_zone.zone_id_twplatformlabs_org.id
       allow_overwrite = true
       records         = [
-        "ns-cloud-c1.googledomains.com.",
-        "ns-cloud-c2.googledomains.com.",
-        "ns-cloud-c3.googledomains.com.",
-        "ns-cloud-c4.googledomains.com.",
+        "ns-cloud-e1.googledomains.com.",
+        "ns-cloud-e2.googledomains.com.",
+        "ns-cloud-e3.googledomains.com.",
+        "ns-cloud-e4.googledomains.com.",
       ]
     }
   
