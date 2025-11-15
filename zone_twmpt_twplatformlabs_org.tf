@@ -40,8 +40,6 @@ module "subdomain_zone_delegation_twmpt_twplatformlabs_org" {
   # }
 
   ]
-
-  depends_on = [module.subdomain_api_twplatformlabs_org]
 }
 
 
