@@ -4,7 +4,7 @@
 # Create a zone delegation in the top level domain for this subdomain
 module "subdomain_zone_delegation_twmpt_twplatformlabs_org" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
-  version = "5.0.0"
+  version = "6.4.0"
   create  = true
 
   providers = {
