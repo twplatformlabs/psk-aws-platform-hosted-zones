@@ -4,11 +4,12 @@ version: 2.1
 orbs:
   terraform: twdps/terraform@3.4.0
   op: twdps/onepassword@3.0.0
-  do: twdps/pipeline-events@5.2.0
+  do: twdps/pipeline-events@5.3.0
 
 globals:
   - &context platform
-  - &executor-image twdps/circleci-infra-aws:alpine-2025.08
+  - &state-workspace psk-aws-platform-hosted-zones-state
+  - &executor-image ghcr.io/twplatformlabs/circleci-infra-aws:alpine-2026.04
 
 on-push-main: &on-push-main
   branches:
@@ -29,17 +30,25 @@ commands:
     parameters:
       account:
         type: string
+        description: account to be configured
+      workspace:
+        description: terraform cloud workspace
+        type: string
     steps:
       - op/env
       - op/tpl:
           tpl-path: environments
           tpl-file: << parameters.account >>.auto.tfvars.json
+      - terraform/tfc-backend:
+          tfc-organization: twplatformlabs
+          tfc-workspace: << parameters.workspace >>
       - terraform/terraformrc
       - do/bash-functions
 
   integration-tests:
     parameters:
       account:
+        description: workspace environment to test
         type: string
     steps:
       - run:
@@ -58,24 +67,24 @@ workflows:
           name: static code analysis
           context: *context
           executor-image: *executor-image
-          workspace: state
+          workspace: *state-workspace
           tflint-scan: true
           tflint-provider: aws
           trivy-scan: true
           before-static-analysis:
-            - op/env:
-                env-file: op.env
+            - op/env
           filters: *on-push-main
 
       - terraform/plan:
           name: hosted-zones change plan
           context: *context
           executor-image: *executor-image
-          workspace: state
+          workspace: *state-workspace
           checkov-scan: true
           before-plan:
             - set-environment:
                 account: multiaccount
+                workspace: *state-workspace
           filters: *on-push-main
 
   hosted-zones release:
@@ -83,10 +92,11 @@ workflows:
       - terraform/apply:
           name: hosted-zones release
           context: *context
-          workspace: state
+          workspace: *state-workspace
           before-apply:
             - set-environment:
                 account: multiaccount
+                workspace: *state-workspace
           after-apply:
             - integration-tests:
                 account: multiaccount
