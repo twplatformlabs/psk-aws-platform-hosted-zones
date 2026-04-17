@@ -92,6 +92,7 @@ workflows:
       - terraform/apply:
           name: hosted-zones release
           context: *context
+          executor-image: *executor-image
           workspace: *state-workspace
           before-apply:
             - set-environment:
