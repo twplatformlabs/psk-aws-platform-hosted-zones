@@ -2,14 +2,13 @@
 version: 2.1
 
 orbs:
-  terraform: twdps/terraform@3.4.0
+  terraform: twdps/terraform@4.0.0
   op: twdps/onepassword@3.0.0
   do: twdps/pipeline-events@5.3.2
 
 globals:
   - &context platform
   - &state-workspace psk-aws-platform-hosted-zones-state
-  - &executor-image ghcr.io/twplatformlabs/circleci-infra-aws:alpine-2026.04.1
 
 on-push-main: &on-push-main
   branches:
@@ -66,7 +65,6 @@ workflows:
       - terraform/static-analysis:
           name: static code analysis
           context: *context
-          executor-image: *executor-image
           workspace: *state-workspace
           tflint-scan: true
           tflint-provider: aws
@@ -78,7 +76,6 @@ workflows:
       - terraform/plan:
           name: hosted-zones change plan
           context: *context
-          executor-image: *executor-image
           workspace: *state-workspace
           checkov-scan: true
           before-plan:
@@ -92,7 +89,6 @@ workflows:
       - terraform/apply:
           name: hosted-zones release
           context: *context
-          executor-image: *executor-image
           workspace: *state-workspace
           before-apply:
             - set-environment:
