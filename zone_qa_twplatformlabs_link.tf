@@ -1,5 +1,13 @@
 # *.qa.twplatformlabs.link
 
+moved {
+  from = module.subdomain_qa_twplatformlabs_link.aws_route53_zone.this["qa.twplatformlabs.link"]
+  to   = module.subdomain_qa_twplatformlabs_link.aws_route53_zone.this[0]
+}
+moved {
+  from = module.subdomain_zone_delegation_qa_twplatformlabs_link.aws_route53_record.this["qa NS"]
+  to   = module.subdomain_zone_delegation_qa_twplatformlabs_link.aws_route53_record.this["qa"]
+}
 # define a provider in the account where this subdomain will be managed
 provider "aws" {
   alias  = "subdomain_qa_twplatformlabs_link"
@@ -12,49 +20,89 @@ provider "aws" {
 
 # create a route53 hosted zone for the subdomain in the account defined by the provider above
 module "subdomain_qa_twplatformlabs_link" {
-  source  = "terraform-aws-modules/route53/aws//modules/zones"
-  version = "5.0.0"
-  create  = true
+  source  = "terraform-aws-modules/route53/aws"
+  version = "6.4.0"
 
   providers = {
     aws = aws.subdomain_qa_twplatformlabs_link
   }
 
-  zones = {
-    "qa.${local.domain_twplatformlabs_link}" = {
-      tags = {
-        cluster = "prod-i01-aws-us-east-2"
-      }
-    }
-  }
+  name = "qa.${local.domain_twplatformlabs_link}"
 
   tags = {
+    cluster = "prod-i01-aws-us-east-2"
     pipeline = "psk-aws-platform-hosted-zones"
   }
 }
 
 # Create a zone delegation in the top level domain for this subdomain
 module "subdomain_zone_delegation_qa_twplatformlabs_link" {
-  source  = "terraform-aws-modules/route53/aws//modules/records"
-  version = "5.0.0"
-  create  = true
+  source  = "terraform-aws-modules/route53/aws"
+  version = "6.4.0"
 
   providers = {
     aws = aws.domain_twplatformlabs_link
   }
 
-  private_zone = false
-  zone_name = local.domain_twplatformlabs_link
-  records = [
-    {
-      name            = "qa"
+  create_zone = false
+  name = local.domain_twplatformlabs_link
+  records = {
+    qa = {
       type            = "NS"
       ttl             = 172800
-      zone_id         = data.aws_route53_zone.zone_id_twplatformlabs_link.id
       allow_overwrite = true
-      records         = module.subdomain_qa_twplatformlabs_link.route53_zone_name_servers["qa.${local.domain_twplatformlabs_link}"]
+      records         = module.subdomain_qa_twplatformlabs_link.name_servers
     }
-  ]
+  }
 
   depends_on = [module.subdomain_qa_twplatformlabs_link]
 }
+
+# create a route53 hosted zone for the subdomain in the account defined by the provider above
+# module "subdomain_qa_twplatformlabs_link" {
+#   source  = "terraform-aws-modules/route53/aws//modules/zones"
+#   version = "5.0.0"
+#   create  = true
+
+#   providers = {
+#     aws = aws.subdomain_qa_twplatformlabs_link
+#   }
+
+#   zones = {
+#     "qa.${local.domain_twplatformlabs_link}" = {
+#       tags = {
+#         cluster = "prod-i01-aws-us-east-2"
+#       }
+#     }
+#   }
+
+#   tags = {
+#     pipeline = "psk-aws-platform-hosted-zones"
+#   }
+# }
+
+# # Create a zone delegation in the top level domain for this subdomain
+# module "subdomain_zone_delegation_qa_twplatformlabs_link" {
+#   source  = "terraform-aws-modules/route53/aws//modules/records"
+#   version = "5.0.0"
+#   create  = true
+
+#   providers = {
+#     aws = aws.domain_twplatformlabs_link
+#   }
+
+#   private_zone = false
+#   zone_name = local.domain_twplatformlabs_link
+#   records = [
+#     {
+#       name            = "qa"
+#       type            = "NS"
+#       ttl             = 172800
+#       zone_id         = data.aws_route53_zone.zone_id_twplatformlabs_link.id
+#       allow_overwrite = true
+#       records         = module.subdomain_qa_twplatformlabs_link.route53_zone_name_servers["qa.${local.domain_twplatformlabs_link}"]
+#     }
+#   ]
+
+#   depends_on = [module.subdomain_qa_twplatformlabs_link]
+# }

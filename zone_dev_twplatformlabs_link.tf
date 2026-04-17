@@ -1,5 +1,13 @@
 # *.dev.twplatformlabs.link
 
+moved {
+  from = module.subdomain_dev_twplatformlabs_link.aws_route53_zone.this["dev.twplatformlabs.link"]
+  to   = module.subdomain_dev_twplatformlabs_link.aws_route53_zone.this[0]
+}
+moved {
+  from = module.subdomain_zone_delegation_dev_twplatformlabs_link.aws_route53_record.this["dev NS"]
+  to   = module.subdomain_zone_delegation_dev_twplatformlabs_link.aws_route53_record.this["dev"]
+}
 # define a provider in the account where this subdomain will be managed
 provider "aws" {
   alias  = "subdomain_dev_twplatformlabs_link"
@@ -12,49 +20,41 @@ provider "aws" {
 
 # create a route53 hosted zone for the subdomain in the account defined by the provider above
 module "subdomain_dev_twplatformlabs_link" {
-  source  = "terraform-aws-modules/route53/aws//modules/zones"
-  version = "5.0.0"
-  create  = true
+  source  = "terraform-aws-modules/route53/aws"
+  version = "6.4.0"
 
   providers = {
     aws = aws.subdomain_dev_twplatformlabs_link
   }
 
-  zones = {
-    "dev.${local.domain_twplatformlabs_link}" = {
-      tags = {
-        cluster = "prod-i01-aws-us-east-2"
-      }
-    }
-  }
+  name = "dev.${local.domain_twplatformlabs_link}" 
 
   tags = {
+    cluster = "prod-i01-aws-us-east-2"
     pipeline = "psk-aws-platform-hosted-zones"
   }
 }
 
 # Create a zone delegation in the top level domain for this subdomain
 module "subdomain_zone_delegation_dev_twplatformlabs_link" {
-  source  = "terraform-aws-modules/route53/aws//modules/records"
-  version = "5.0.0"
-  create  = true
+  source  = "terraform-aws-modules/route53/aws"
+  version = "6.4.0"
 
   providers = {
     aws = aws.domain_twplatformlabs_link
   }
 
-  private_zone = false
-  zone_name = local.domain_twplatformlabs_link
-  records = [
-    {
-      name            = "dev"
+  create_zone = false
+  name = local.domain_twplatformlabs_link
+
+  records = {
+    dev = {
       type            = "NS"
       ttl             = 172800
-      zone_id         = data.aws_route53_zone.zone_id_twplatformlabs_link.id
       allow_overwrite = true
-      records         = module.subdomain_dev_twplatformlabs_link.route53_zone_name_servers["dev.${local.domain_twplatformlabs_link}"]
+      records         = module.subdomain_dev_twplatformlabs_link.name_servers
     }
-  ]
+  }
 
   depends_on = [module.subdomain_dev_twplatformlabs_link]
 }
