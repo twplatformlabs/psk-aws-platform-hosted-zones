@@ -4,3 +4,4 @@ credentials
 source.env
 bash-functions.sh
 .ruby-version
+terraform-backend.tf
