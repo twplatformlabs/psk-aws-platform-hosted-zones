@@ -11,7 +11,7 @@ provider "aws" {
 }
 
 # zone id for the top-level-zone
-data "aws_route53_zone" "zone_id_twplatformlabs_link" {
-  provider = aws.domain_twplatformlabs_link
-  name     = local.domain_twplatformlabs_link
-}
+# data "aws_route53_zone" "zone_id_twplatformlabs_link" {
+#   provider = aws.domain_twplatformlabs_link
+#   name     = local.domain_twplatformlabs_link
+# }
