@@ -1,13 +1,5 @@
 # *.prod-i01-aws-us-east-2.twplatformlabs.org
 
-moved {
-  from = module.subdomain_prod_i01_aws_us_east_2_twplatformlabs_org.aws_route53_zone.this["prod-i01-aws-us-east-2.twplatformlabs.org"]
-  to   = module.subdomain_prod_i01_aws_us_east_2_twplatformlabs_org.aws_route53_zone.this[0]
-}
-moved {
-  from = module.subdomain_zone_delegation_prod_i01_aws_us_east_2_twplatformlabs_org.aws_route53_record.this["prod-i01-aws-us-east-2 NS"]
-  to   = module.subdomain_zone_delegation_prod_i01_aws_us_east_2_twplatformlabs_org.aws_route53_record.this["prod-i01-aws-us-east-2"]
-}
 # define a provider in the account where this subdomain will be managed
 provider "aws" {
   alias  = "subdomain_prod_i01_aws_us_east_2_twplatformlabs_org"
@@ -21,7 +13,7 @@ provider "aws" {
 # create a route53 hosted zone for the subdomain in the account defined by the provider above
 module "subdomain_prod_i01_aws_us_east_2_twplatformlabs_org" {
   source  = "terraform-aws-modules/route53/aws"
-  version = "6.4.0"
+  version = "6.6.1"
 
   providers = {
     aws = aws.subdomain_prod_i01_aws_us_east_2_twplatformlabs_org
@@ -38,7 +30,7 @@ module "subdomain_prod_i01_aws_us_east_2_twplatformlabs_org" {
 # Create a zone delegation in the top level domain for this subdomain
 module "subdomain_zone_delegation_prod_i01_aws_us_east_2_twplatformlabs_org" {
   source  = "terraform-aws-modules/route53/aws"
-  version = "6.4.0"
+  version = "6.6.1"
 
   providers = {
     aws = aws.domain_twplatformlabs_org
@@ -57,52 +49,3 @@ module "subdomain_zone_delegation_prod_i01_aws_us_east_2_twplatformlabs_org" {
 
   depends_on = [module.subdomain_prod_i01_aws_us_east_2_twplatformlabs_org]
 }
-
-# create a route53 hosted zone for the subdomain in the account defined by the provider above
-# module "subdomain_prod_i01_aws_us_east_2_twplatformlabs_org" {
-#   source  = "terraform-aws-modules/route53/aws//modules/zones"
-#   version = "5.0.0"
-#   create  = true
-
-#   providers = {
-#     aws = aws.subdomain_prod_i01_aws_us_east_2_twplatformlabs_org
-#   }
-
-#   zones = {
-#     "prod-i01-aws-us-east-2.${local.domain_twplatformlabs_org}" = {
-#       tags = {
-#         cluster = "prod-i01-aws-us-east-2"
-#       }
-#     }
-#   }
-
-#   tags = {
-#     pipeline = "psk-aws-platform-hosted-zones"
-#   }
-# }
-
-# # Create a zone delegation in the top level domain for this subdomain
-# module "subdomain_zone_delegation_prod_i01_aws_us_east_2_twplatformlabs_org" {
-#   source  = "terraform-aws-modules/route53/aws//modules/records"
-#   version = "5.0.0"
-#   create  = true
-
-#   providers = {
-#     aws = aws.domain_twplatformlabs_org
-#   }
-
-#   private_zone = false
-#   zone_name = local.domain_twplatformlabs_org
-#   records = [
-#     {
-#       name            = "prod-i01-aws-us-east-2"
-#       type            = "NS"
-#       ttl             = 172800
-#       zone_id         = data.aws_route53_zone.zone_id_twplatformlabs_org.id
-#       allow_overwrite = true
-#       records         = module.subdomain_prod_i01_aws_us_east_2_twplatformlabs_org.route53_zone_name_servers["prod-i01-aws-us-east-2.${local.domain_twplatformlabs_org}"]
-#     }
-#   ]
-
-#   depends_on = [module.subdomain_prod_i01_aws_us_east_2_twplatformlabs_org]
-# }
