@@ -13,7 +13,7 @@ provider "aws" {
 # create a route53 hosted zone for the subdomain in the account defined by the provider above
 module "subdomain_prod_i01_aws_us_east_2_twplatformlabs_link" {
   source  = "terraform-aws-modules/route53/aws"
-  version = "6.6.1"
+  version = "6.5.0"
 
   providers = {
     aws = aws.subdomain_prod_i01_aws_us_east_2_twplatformlabs_link
@@ -30,7 +30,7 @@ module "subdomain_prod_i01_aws_us_east_2_twplatformlabs_link" {
 # Create a zone delegation in the top level domain for this subdomain
 module "subdomain_zone_delegation_prod_i01_aws_us_east_2_twplatformlabs_link" {
   source  = "terraform-aws-modules/route53/aws"
-  version = "6.6.1"
+  version = "6.5.0"
 
   providers = {
     aws = aws.domain_twplatformlabs_link
